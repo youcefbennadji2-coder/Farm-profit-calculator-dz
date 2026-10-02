@@ -1,0 +1,457 @@
+
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#1f6f4a">
+
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="حاسبة الفلاح DZ">
+<meta name="application-name" content="حاسبة الفلاح DZ">
+<meta name="description" content="حاسبة فلاحية جزائرية لحساب التكاليف والربحية ونقطة التعادل والسيناريوهات.">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon.svg">
+
+<title>الحاسبة الفلاحية DZ — V4.1 Product Edition + عمولة البيع + Edge Cases Fixed</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f4f7f5;color:#17231d;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Tahoma,Arial,sans-serif}
+.wrap{max-width:1100px;margin:auto;padding:14px}.hero{background:linear-gradient(135deg,#174d35,#2d8a5b);color:#fff;border-radius:20px;padding:20px;box-shadow:0 8px 25px #174d3526}
+h1{margin:0 0 6px;font-size:25px}.sub{opacity:.9;font-size:14px}
+.card{background:#fff;border-radius:18px;padding:16px;margin-top:14px;box-shadow:0 3px 15px #0000000b;border:1px solid #e8eee9}
+h2{font-size:18px;margin:0 0 13px}.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+label{font-size:12px;font-weight:700;color:#536158;display:block;margin-bottom:5px}
+input,select{width:100%;border:1px solid #d6dfd9;border-radius:11px;padding:11px;background:#fbfcfb;font-size:15px;outline:none}
+input:focus,select:focus{border-color:#2d8a5b}
+.btns{display:flex;gap:9px;flex-wrap:wrap;margin-top:13px}.btn{border:0;border-radius:12px;padding:11px 16px;font-weight:800;cursor:pointer;background:#1f6f4a;color:white}.btn.alt{background:#edf4ef;color:#1f6f4a}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.kpi{border:1px solid #e5ebe7;border-radius:15px;padding:13px;background:#fbfcfb}.kpi small{display:block;color:#68756d;font-size:12px}.kpi strong{display:block;font-size:21px;margin-top:5px}.positive{color:#187044}.negative{color:#b13d32}
+.status{display:inline-block;padding:7px 12px;border-radius:999px;background:#edf4ef;color:#1f6f4a;font-weight:800;font-size:13px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:14px}.metrics{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}.metric{background:#f7faf8;border-radius:12px;padding:11px}.metric b{display:block;font-size:16px}.metric span{font-size:11px;color:#69756e}
+table{width:100%;border-collapse:collapse;font-size:13px}th,td{padding:10px 7px;border-bottom:1px solid #e8ede9;text-align:center}th{background:#f3f7f4}td:first-child,th:first-child{text-align:right}
+.bar{height:10px;background:#e9eeeb;border-radius:20px;overflow:hidden;margin-top:7px}.fill{height:100%;width:0;background:#2d8a5b;border-radius:20px}
+.note{font-size:12px;color:#68756d;line-height:1.6}.footer{text-align:center;color:#77827c;font-size:11px;padding:16px}.print-head{display:none}
+@media(max-width:800px){.grid,.kpis{grid-template-columns:repeat(2,1fr)}.two{grid-template-columns:1fr}}
+@media print{
+ body{background:#fff;color:#111}.wrap{max-width:none;padding:0}.hero{background:#fff!important;color:#111;border:2px solid #1f6f4a;box-shadow:none;border-radius:0}.card{box-shadow:none;border:1px solid #ccc;break-inside:avoid;margin-top:10px}.hero .sub{color:#444;opacity:1}.btns,.footer{display:none!important}.print-head{display:flex;justify-content:space-between;align-items:center;margin:0 0 10px;padding:8px 0;border-bottom:2px solid #1f6f4a}.print-head strong{font-size:18px}.print-head span{font-size:11px;color:#555}.two{grid-template-columns:1fr 1fr}.kpis{grid-template-columns:repeat(4,1fr)}table{font-size:11px}@page{size:A4;margin:12mm}
+}
+@media(max-width:480px){.wrap{padding:9px}.grid,.kpis{grid-template-columns:1fr 1fr}.kpi strong{font-size:17px}h1{font-size:21px}.card{padding:13px}}
+.section-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}.step{display:inline-flex;align-items:center;justify-content:center;min-width:28px;height:28px;border-radius:50%;background:#edf4ef;color:#1f6f4a;font-weight:900;margin-left:7px}.hint{font-size:11px;color:#718078;margin-top:4px;line-height:1.45}.required::after{content:" *";color:#b13d32}.field-error{border-color:#b13d32!important;background:#fff8f7!important}.error-box{display:none;background:#fff4f2;border:1px solid #f0c9c4;color:#8d3028;border-radius:12px;padding:10px 12px;font-size:12px;line-height:1.6;margin-top:12px}.error-box.show{display:block}.tip{background:#f7faf8;border-right:4px solid #2d8a5b;padding:11px 13px;border-radius:10px;font-size:12px;line-height:1.7;color:#536158}.product-bar{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:12px}.mini-actions{display:flex;gap:7px;flex-wrap:wrap}.mini-btn{border:1px solid #d9e4dc;background:#fff;color:#1f6f4a;border-radius:10px;padding:8px 11px;font-weight:800;font-size:12px;cursor:pointer}.mini-btn.primary{background:#1f6f4a;color:#fff;border-color:#1f6f4a}.progress{height:6px;background:#e9eeeb;border-radius:20px;overflow:hidden;margin-top:10px}.progress span{display:block;height:100%;width:0;background:#2d8a5b;border-radius:20px;transition:width .2s}.sticky-actions{position:sticky;bottom:8px;z-index:10;background:#ffffffee;backdrop-filter:blur(8px);border:1px solid #dfe8e2;border-radius:14px;padding:8px;box-shadow:0 5px 18px #00000012}.legal{font-size:10px;color:#7b857f;line-height:1.6;text-align:center}
+
+.app-status{font-size:11px;font-weight:800;margin-bottom:8px;opacity:.92}
+.install-btn{display:none}
+@media(max-width:600px){
+  body{overscroll-behavior-y:contain}
+  input,select,button{font-size:16px;min-height:44px}
+  .sticky-actions{bottom:max(8px,env(safe-area-inset-bottom));padding-bottom:calc(8px + env(safe-area-inset-bottom))}
+  .btns{display:grid;grid-template-columns:1fr 1fr}
+  .btn{width:100%}
+  .product-bar{align-items:stretch}
+  .mini-actions{width:100%;display:grid;grid-template-columns:1fr 1fr}
+  .mini-btn{min-height:44px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hero">
+<div class="app-status" id="appStatus" aria-live="polite">● جاهز للاستخدام</div>
+    <h1>🌱 لوحة التحكم الاحترافية للمشروع</h1>
+    <div class="sub">الحاسبة الفلاحية DZ — V4.1 · الوحدات الجزائرية: هكتار / قنطار / دج للكلغ</div>
+  </div>
+
+  <div class="print-head"><strong>تقرير المشروع الفلاحي — Farm Profit Calculator DZ V4.1</strong><span id="printDate"></span></div>
+
+  <section class="card"><div class="section-head"><h2 style="margin:0"><span class="step">1</span>ابدأ في 3 خطوات</h2><span class="status">نسخة V4.1</span></div><div class="two"><div class="tip"><b>① أدخل المعطيات</b><br>المساحة، الإنتاج، الفاقد، السعر والتكاليف. الحقول الرقمية تبدأ من 0 ويمكن استبدالها مباشرة.</div><div class="tip"><b>② احسب</b><br>ستظهر الربحية، نقطة التعادل، المؤشرات الفنية وثلاثة سيناريوهات للمشروع.</div></div><div class="tip" style="margin-top:8px"><b>③ استخدم التقرير</b><br>يمكنك طباعة النتائج أو فتح تقرير احترافي مستقل وحفظه كـ PDF من الهاتف أو الكمبيوتر.</div></section>
+
+  <section class="card">
+    <h2>بيانات المشروع</h2>
+    <div class="grid">
+      <div><label class="required">نوع المحصول</label><input id="crop" list="crops" value="" placeholder="اكتب اسم المحصول أو اختر من القائمة" aria-label="نوع المحصول" autocomplete="off"><div class="hint">يمكنك كتابة أي محصول غير موجود في القائمة.</div></div>
+      <datalist id="crops"></datalist>
+      <div><label>نوع الدورة</label><select id="type"><option value="perennial">محصول دائم / أشجار مثمرة</option><option value="annual">محصول سنوي</option></select></div>
+      <div><label>المساحة (هكتار)</label><input id="area" type="number" min="0" step="0.01" value="0"></div>
+      <div id="treesWrap"><label>عدد الأشجار / هكتار</label><input id="trees" type="number" min="0" step="1" value="0"></div>
+      <div><label>الإنتاج الإجمالي (قنطار)</label><input id="grossQ" type="number" min="0" step="0.01" value="0"></div>
+      <div><label id="lossLabel">الفاقد</label><div style="display:grid;grid-template-columns:1fr 105px;gap:6px"><input id="loss" type="number" min="0" max="100" step="0.1" value="0" inputmode="decimal" aria-label="قيمة الفاقد"><select id="lossUnit" aria-label="وحدة الفاقد"><option value="percent">%</option><option value="kg">كغ</option></select></div></div>
+      <div><label>سعر البيع (دج/كلغ)</label><input id="price" type="number" min="0" step="0.01" value="0"></div>
+      <div><label>عمولة البيع (%)</label><input id="commission" type="number" min="0" max="100" step="0.1" value="0" inputmode="decimal"><div class="hint">نسبة العمولة التي يقتطعها البائع/سوق الجملة من قيمة البيع.</div></div>
+      <div><label>التكاليف حسب الهكتار (دج/هكتار)</label><input id="fixed" type="number" min="0" step="100" value="0"></div>
+      <div><label>الجني + الفرز + التوضيب (دج)</label><input id="harvestPack" type="number" min="0" step="100" value="0"></div>
+      <div><label>النقل (دج)</label><input id="transport" type="number" min="0" step="100" value="0"></div>
+      <div><label>تكلفة الغرس / هكتار (دج)</label><input id="plant" type="number" min="0" step="100" value="0"></div>
+      <div id="yearWrap"><label>السنة</label><input id="year" type="number" min="1" step="1" value="0"></div>
+    </div>
+    <div id="errorBox" class="error-box" role="alert"></div>
+    <div class="sticky-actions"><div class="btns" style="margin-top:0">
+      <button class="btn" type="button" id="calcBtn">احسب النتائج</button>
+      <button class="btn alt" type="button" id="saveBtn">💾 حفظ المشروع</button>
+      <button class="btn alt" type="button" id="loadBtn">↩️ استرجاع</button>
+      <button class="btn alt" type="button" id="resetBtn">مشروع جديد</button>
+    </div></div>
+    <div class="product-bar"><span class="note" id="progressText">أكمل البيانات الأساسية ثم احسب النتائج.</span><div class="mini-actions"><button class="mini-btn" type="button" id="printBtn">🖨️ طباعة</button><button class="mini-btn primary" type="button" id="reportBtn">📄 التقرير النهائي</button><button class="mini-btn install-btn" type="button" id="installBtn">📲 تثبيت التطبيق</button></div></div>
+    <div class="progress" aria-label="اكتمال البيانات"><span id="progressBar"></span></div>
+  </section>
+
+  <section class="card">
+    <h2>النتيجة التنفيذية — <span id="titleCrop">المشروع</span></h2>
+    <span id="status" class="status">أدخل البيانات ثم احسب</span>
+    <div class="kpis" style="margin-top:12px">
+      <div class="kpi"><small>رقم الأعمال</small><strong id="revenue">—</strong></div>
+      <div class="kpi"><small>عمولة البيع</small><strong id="commissionTotal">—</strong></div>
+      <div class="kpi"><small>إجمالي التكاليف</small><strong id="cost">—</strong></div>
+      <div class="kpi"><small>الربح الصافي</small><strong id="profit">—</strong></div>
+      <div class="kpi"><small>الربح / هكتار</small><strong id="profitHa">—</strong></div>
+      <div class="kpi"><small>الإنتاج القابل للبيع</small><strong id="saleQ">—</strong></div>
+      <div class="kpi"><small>التكلفة / كلغ</small><strong id="costKg">—</strong></div>
+      <div class="kpi"><small>هامش الربح</small><strong id="margin">—</strong></div>
+      <div class="kpi"><small>ROI</small><strong id="roi">—</strong></div>
+    </div>
+  </section>
+
+  <div class="two">
+    <section class="card">
+      <h2>نقطة التعادل</h2>
+      <div class="metrics">
+        <div class="metric"><span>سعر التعادل</span><b id="bePrice">—</b></div>
+        <div class="metric"><span>إنتاج التعادل</span><b id="beQ">—</b></div>
+        <div class="metric"><span>هامش الأمان</span><b id="safety">—</b></div>
+        <div class="metric"><span>العائد / التكلفة</span><b id="revCost">—</b></div>
+      </div>
+      <div style="margin-top:12px"><span class="note">هامش الأمان الإنتاجي</span><div class="bar"><div class="fill" id="safetyBar"></div></div></div>
+    </section>
+
+    <section class="card">
+      <h2>مؤشرات فنية</h2>
+      <div class="metrics">
+        <div class="metric"><span>الإنتاج / هكتار</span><b id="yieldHa">—</b></div>
+        <div class="metric"><span>الإنتاج / شجرة</span><b id="kgTree">—</b></div>
+        <div class="metric"><span>التكاليف حسب الهكتار</span><b id="fixedTotal">—</b></div>
+        <div class="metric"><span>الجني + الفرز + التوضيب</span><b id="harvestTotal">—</b></div>
+        <div class="metric"><span>النقل</span><b id="transportTotal">—</b></div>
+        <div class="metric"><span>صافي المبيعات بعد العمولة</span><b id="netRevenue">—</b></div>
+      </div>
+    </section>
+  </div>
+
+  <section class="card">
+    <h2>هيكل التكاليف</h2>
+    <div class="metrics">
+      <div class="metric"><span>حسب الهكتار</span><b id="c1">—</b></div>
+      <div class="metric"><span>الجني + الفرز + التوضيب</span><b id="c2">—</b></div>
+      <div class="metric"><span>النقل</span><b id="c3">—</b></div>
+       <div class="metric"><span>عمولة البيع</span><b id="cCommission">—</b></div>
+      <div class="metric"><span>الغرس</span><b id="c4">—</b></div>
+      <div class="metric"><span>الإجمالي</span><b id="c5">—</b></div>
+    </div>
+    <p class="note" id="plantNote"></p>
+  </section>
+
+  <section class="card">
+    <h2>مقارنة السيناريوهات</h2>
+    <table>
+      <thead><tr><th>السيناريو</th><th>الإنتاج (ق)</th><th>السعر (دج/كلغ)</th><th>رقم الأعمال</th><th>التكاليف</th><th>الربح</th><th>الهامش</th></tr></thead>
+      <tbody id="scenarios"></tbody>
+    </table>
+  </section>
+
+  <div class="footer">V4.1 Product Edition — أداة مساعدة لاتخاذ القرار؛ دقة النتائج مرتبطة بدقة المعطيات المدخلة.</div>
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+const n=id=>{ const raw=$(id)?.value; const v=Number(String(raw??'').trim().replace(/\s/g,'').replace(',', '.')); return Number.isFinite(v)&&v>=0?v:0; };
+
+const treeCrops = ['نكتارين','خوخ','حمضيات','زيتون','مشمش','تفاح','كمثرى','برقوق','لوز','رمان'];
+const annualCrops = ['طماطم','بطاطا','فلفل','خيار','كوسة','بصل','جزر','خس','بطيخ','شمام','فاصوليا','ذرة','قمح','شعير'];
+
+function updateCropSuggestions(){
+  const list = $('crops');
+  const isPerennial = $('type').value === 'perennial';
+  const items = isPerennial ? treeCrops : annualCrops;
+  list.innerHTML = items.map(x=>`<option>${x}</option>`).join('') +
+    `<option>${isPerennial ? 'شجرة أخرى' : 'محصول سنوي آخر'}</option>`;
+}
+
+$('type').addEventListener('change', ()=>{ updateCropSuggestions(); updateMode(); calc(); });
+
+function updateMode(){
+  const perennial=$('type').value==='perennial';
+  $('treesWrap').style.display=perennial?'':'none';$('trees').disabled=!perennial;
+  if(!perennial) $('trees').value=0;
+  $('kgTree').parentElement.style.display=perennial?'':'none';
+  $('yearWrap').style.display=perennial?'':'none';$('year').disabled=!perennial;
+  if(!perennial) $('year').value=0;
+  $('plantNote').textContent=perennial ? 'الغرس محسوب في السنة الأولى فقط.' : 'للمحصول السنوي: تكلفة الزراعة تُحتسب في كل دورة.';
+}
+
+function updateLossMode(){
+  const unit=$('lossUnit').value;
+  const label=$('lossLabel');
+  const input=$('loss');
+  if(unit==='kg'){
+    label.textContent='وزن الفاقد (كغ)';
+    input.removeAttribute('max');
+    input.step='0.01';
+    input.setAttribute('inputmode','decimal');
+  }else{
+    label.textContent='نسبة الفاقد (%)';
+    input.max='100';
+    input.step='0.1';
+    input.setAttribute('inputmode','decimal');
+  }
+}
+$('lossUnit').addEventListener('change', ()=>{ updateLossMode(); calc(); });
+
+document.querySelectorAll('input[type="number"]').forEach(el=>{
+  el.setAttribute('inputmode', el.step && el.step !== '1' ? 'decimal' : 'numeric');
+  el.addEventListener('input', function(){
+    if(this.value.includes(',')) this.value=this.value.replace(/,/g,'.');
+    if(this.id==='trees' || this.id==='year'){
+      const v=this.value.replace(/[^0-9]/g,'');
+      if(v!==this.value) this.value=v;
+    }
+    updateProgress();
+  });
+  el.addEventListener('focus', function(){ if(this.value==='0') this.select(); });
+});
+
+updateLossMode();
+updateCropSuggestions();
+updateMode();
+document.querySelectorAll('input,select').forEach(el=>el.addEventListener('input',()=>updateProgress()));
+const fmt=x=>Number.isFinite(x)?Math.round(x).toLocaleString('fr-DZ'):'—';
+const pct=x=>Number.isFinite(x)?x.toFixed(1)+' %':'—';
+const metric=x=>Number.isFinite(x)?x.toFixed(2):'غير قابل للحساب';
+
+function calculate(){
+ const area=n('area'), trees=n('trees'), gross=n('grossQ'), lossInput=n('loss');
+ const lossUnit=$('lossUnit').value;
+ const grossKg=gross*100;
+ const lossKg=lossUnit==='kg' ? Math.min(grossKg,lossInput) : grossKg*Math.min(100,lossInput)/100;
+ const lossPct=grossKg>0 ? (lossKg/grossKg)*100 : 0;
+ const price=n('price'), commission=Math.min(100,n('commission')), fixed=n('fixed'), harvestPack=n('harvestPack'), transport=n('transport'), plant=n('plant'), year=Math.max(1,n('year'));
+ const perennial=$('type').value==='perennial';
+ const saleKg=Math.max(0,grossKg-lossKg), saleQ=saleKg/100;
+ const fixedTotal=area*fixed;
+ const plantingTotal=perennial ? (year===1?area*plant:0) : area*plant;
+ const operatingCost=fixedTotal+harvestPack+transport+plantingTotal;
+ const revenue=saleKg*price;
+ const commissionTotal=revenue*commission/100;
+ const netRevenue=Math.max(0,revenue-commissionTotal);
+ const totalCost=operatingCost+commissionTotal;
+ const profit=netRevenue-operatingCost;
+ const costKg=saleKg?totalCost/saleKg:0, margin=revenue?profit/revenue*100:0;
+ const roi=totalCost?profit/totalCost*100:0, profitHa=area?profit/area:0;
+ const yieldHa=area?saleQ/area:0, kgTree=perennial&&trees>0?saleKg/(trees*area):0;
+
+ const canBreakEven = saleKg>0 && commission<100;
+ const bePrice=canBreakEven?(operatingCost/saleKg)/(1-commission/100):null;
+ const beQ=(saleKg>0 && price>0 && commission<100)?operatingCost/(price*(1-commission/100))/100:null;
+ const safety=(saleQ>0 && beQ!==null)?((saleQ-beQ)/saleQ*100):null;
+ const revCost=totalCost?revenue/totalCost:0;
+ return {area,trees,gross,loss:lossPct,lossInput,lossUnit,lossKg,price,commission,fixed,harvestPack,transport,plant,year,perennial,saleQ,saleKg,fixedTotal,plantingTotal,operatingCost,commissionTotal,netRevenue,totalCost,revenue,profit,costKg,margin,roi,profitHa,yieldHa,kgTree,bePrice,beQ,safety,revCost};
+}
+function validateInputs(){
+ const errors=[]; const crop=$('crop').value.trim(); const area=n('area'); const gross=n('grossQ'); const price=n('price');
+ document.querySelectorAll('input[type=number],#crop').forEach(el=>el.classList.remove('field-error'));
+ if(!crop){errors.push('أدخل اسم المحصول أو المشروع.'); $('crop').classList.add('field-error');}
+ if(area<=0){errors.push('أدخل مساحة أكبر من صفر.'); $('area').classList.add('field-error');}
+ if(gross<=0){errors.push('أدخل إنتاجًا إجماليًا أكبر من صفر.'); $('grossQ').classList.add('field-error');}
+ if(price<=0){errors.push('أدخل سعر بيع أكبر من صفر.'); $('price').classList.add('field-error');}
+ const commission=n('commission'); if(commission>100){errors.push('عمولة البيع يجب أن تكون بين 0% و100%.'); $('commission').classList.add('field-error');}
+  const loss=n('loss'); if($('lossUnit').value==='kg' && loss>gross*100){errors.push('وزن الفاقد لا يمكن أن يتجاوز الإنتاج الإجمالي.'); $('loss').classList.add('field-error');}
+ if($('type').value==='perennial' && n('trees')<=0){errors.push('للمحصول الدائم: أدخل عدد الأشجار لكل هكتار.'); $('trees').classList.add('field-error');}
+ if($('type').value==='perennial' && n('year')<1){errors.push('أدخل رقم السنة للمشروع الدائم.'); $('year').classList.add('field-error');}
+ return errors;
+}
+function updateProgress(){
+ const ids=['crop','area','grossQ','price','commission','fixed','harvestPack','transport']; let done=0; ids.forEach(id=>{const el=$(id); if(id==='crop'?el.value.trim():n(id)>0) done++;});
+ if($('type').value==='perennial'){ if(n('trees')>0) done++; if(n('year')>0) done++; } else done++;
+ const pctDone=Math.round(done/(ids.length+2)*100); $('progressBar').style.width=Math.min(100,pctDone)+'\%';$('progressText').textContent=pctDone>=100?'المعطيات الأساسية مكتملة — يمكنك حساب النتائج.':'اكتمال البيانات الأساسية: '+pctDone+'%';
+}
+function showErrors(errors){ const box=$('errorBox'); if(!errors.length){box.classList.remove('show');box.innerHTML='';return;} box.innerHTML='<b>راجع البيانات:</b><ul style="margin:5px 0 0;padding-right:18px">'+errors.map(e=>'<li>'+e+'</li>').join('')+'</ul>'; box.classList.add('show'); }
+function calc(showValidation=false){
+ updateProgress(); const errors=validateInputs(); showErrors(showValidation?errors:[]); if(showValidation && errors.length){ $('status').textContent='بيانات ناقصة'; return null; }
+ const d=calculate(), crop=$('crop').value.trim()||'المشروع';
+ $('titleCrop').textContent=crop;
+ $('revenue').textContent=fmt(d.revenue)+' دج'; $('commissionTotal').textContent=fmt(d.commissionTotal)+' دج'; $('cost').textContent=fmt(d.totalCost)+' دج';
+ $('profit').textContent=fmt(d.profit)+' دج'; $('profitHa').textContent=fmt(d.profitHa)+' دج';
+ $('saleQ').textContent=d.saleQ.toFixed(2)+' ق'; $('costKg').textContent=d.costKg.toFixed(2)+' دج/كلغ';
+ $('margin').textContent=pct(d.margin);$('roi').textContent=pct(d.roi);
+ $('bePrice').textContent=d.bePrice===null?'غير قابل للحساب':d.bePrice.toFixed(2)+' دج/كلغ'; $('beQ').textContent=d.beQ===null?'غير قابل للحساب':d.beQ.toFixed(2)+' ق';
+ $('safety').textContent=pct(d.safety); $('revCost').textContent=d.revCost.toFixed(2)+'×';$('yieldHa').textContent=d.yieldHa.toFixed(2)+' ق/هكتار';
+ $('kgTree').textContent=d.kgTree?d.kgTree.toFixed(2)+' كلغ/شجرة':'—';
+ $('fixedTotal').textContent=fmt(d.fixedTotal)+' دج'; $('harvestTotal').textContent=fmt(d.harvestPack)+' دج'; $('transportTotal').textContent=fmt(d.transport)+' دج'; $('netRevenue').textContent=fmt(d.netRevenue)+' دج';
+ $('c1').textContent=fmt(d.fixedTotal)+' دج'; $('c2').textContent=fmt(d.harvestPack)+' دج'; $('c3').textContent=fmt(d.transport)+' دج'; $('cCommission').textContent=fmt(d.commissionTotal)+' دج';
+ $('c4').textContent=fmt(d.plantingTotal)+' دج'; $('c5').textContent=fmt(d.totalCost)+' دج';
+ $('plantNote').textContent=$('type').value==='perennial'
+   ? (d.year===1?'الغرس محسوب في السنة الأولى فقط.':'الغرس غير محسوب في هذه السنة لأن المحصول دائم.')
+   : 'للمحصول السنوي: تكلفة الغرس/الزراعة تُحتسب في كل دورة.';
+ const st=$('status'); st.textContent=d.profit>0?'مربح':(Math.abs(d.profit)<1?'قريب من التعادل':'خسارة');
+ st.style.color=d.profit>=0?'#1f6f4a':'#b13d32'; st.style.background=d.profit>=0?'#edf4ef':'#fbeeed';
+ $('profit').className=''; if(d.profit<0)$('profit').className='negative'; else $('profit').className='positive';$('safetyBar').style.width=Math.max(0,Math.min(100,d.safety))+'%';
+ scenarios(d);
+}
+function scenarios(b){
+ const arr=[['محافظ',.85,.85],['أساسي',1,1],['متفائل',1.15,1.15]];
+ $('scenarios').innerHTML=arr.map(x=>{
+   const name=x[0],pf=x[1],pr=x[2], q=b.saleQ*pf, p=b.price*pr, rev=q*100*p;
+   const operating=b.fixedTotal+b.harvestPack+b.transport+b.plantingTotal, comm=rev*b.commission/100, cost=operating+comm, prof=(rev-comm)-operating, mar=rev?prof/rev*100:0;
+   return `<tr><td><b>${name}</b></td><td>${q.toFixed(2)}</td><td>${p.toFixed(2)}</td><td>${fmt(rev)} دج</td><td>${fmt(cost)} دج</td><td class="${prof>=0?'positive':'negative'}">${fmt(prof)} دج</td><td>${pct(mar)}</td></tr>`;
+ }).join('');
+}
+function printResults(){
+  const errors=validateInputs(); if(errors.length){showErrors(errors); $('status').textContent='بيانات ناقصة'; return;}
+  const d=new Date();
+  $('printDate').textContent='تاريخ التقرير: '+d.toLocaleDateString('fr-DZ');
+  calc();
+  window.print();
+}
+
+function downloadFinalReport(){
+  const errors=validateInputs(); if(errors.length){showErrors(errors); $('status').textContent='بيانات ناقصة'; return;}
+  const d=calculate();
+  const crop=$('crop').value.trim()||'المشروع الفلاحي';
+  const type=$('type').value==='perennial'?'محصول دائم / أشجار مثمرة':'محصول سنوي';
+  const today=new Date().toLocaleDateString('fr-DZ');
+  const profitClass=d.profit>=0?'positive':'negative';
+  const status=d.profit>0?'مربح':(Math.abs(d.profit)<1?'قريب من التعادل':'خسارة');
+
+  let advice=[];
+  if(d.profit>0) advice.push('النتيجة الحالية تشير إلى هامش ربح موجب. حافظ على متابعة التكاليف وسعر البيع لأن تغير أي منهما يؤثر مباشرة في الربحية.');
+  else if(Math.abs(d.profit)<1) advice.push('المشروع قريب من نقطة التعادل. راقب التكاليف وسعر البيع والإنتاج القابل للبيع قبل اتخاذ قرار استثماري.');
+  else advice.push('النتيجة الحالية سالبة. يُنصح بمراجعة عناصر التكلفة والإنتاج وسعر البيع والفاقد قبل اعتماد المشروع.');
+  if(d.commission>0) advice.push('تم احتساب عمولة البيع بنسبة '+d.commission.toFixed(1)+'% من قيمة البيع وخصمها من نتيجة المشروع.');
+  if(d.lossKg>0) advice.push('الفاقد يؤثر مباشرة في الكمية القابلة للبيع؛ تقليله بعد الجني والتوضيب يمكن أن يحسن رقم الأعمال.');
+  if(d.bePrice!==null && d.price<d.bePrice) advice.push('سعر البيع الحالي أقل من سعر التعادل المحسوب، لذلك يحتاج المشروع إلى تحسين السعر أو خفض التكلفة أو رفع الكمية القابلة للبيع.');
+  if(d.bePrice!==null && d.price>=d.bePrice) advice.push('سعر البيع الحالي أعلى من سعر التعادل المحسوب وفق المعطيات المدخلة.');
+  if(d.perennial && d.year===1 && d.plantingTotal>0) advice.push('تم إدراج تكلفة الغرس في السنة الأولى فقط حسب منطق الحاسبة.');
+  if(!d.perennial) advice.push('للمحصول السنوي، تكلفة الزراعة/الغرس مدرجة في الدورة الحالية.');
+  if(d.commission>=100) advice.push('عمولة البيع 100% تمنع وجود صافي إيراد من البيع؛ لذلك مؤشرات نقطة التعادل وهامش الأمان غير قابلة للحساب.');
+  else if(d.saleKg<=0) advice.push('لا توجد كمية قابلة للبيع حاليًا؛ لذلك مؤشرات نقطة التعادل وهامش الأمان غير قابلة للحساب.');
+
+  const rows=[
+    ['نوع المحصول',crop],['نوع الدورة',type],['المساحة',d.area.toFixed(2)+' هكتار'],
+    ['الإنتاج الإجمالي',d.gross.toFixed(2)+' قنطار'],['الفاقد',d.lossUnit==='kg' ? d.lossKg.toFixed(2)+' كغ' : d.loss.toFixed(1)+' %'],
+    ['الإنتاج القابل للبيع',d.saleQ.toFixed(2)+' قنطار'],['سعر البيع',d.price.toFixed(2)+' دج/كلغ'],['عمولة البيع',d.commission.toFixed(1)+' %'],['قيمة عمولة البيع',fmt(d.commissionTotal)+' دج'],['صافي المبيعات بعد العمولة',fmt(d.netRevenue)+' دج'],
+    ['التكاليف حسب الهكتار',fmt(d.fixedTotal)+' دج'],['الجني + الفرز + التوضيب',fmt(d.harvestPack)+' دج'],
+    ['النقل',fmt(d.transport)+' دج'],['الغرس/الزراعة',fmt(d.plantingTotal)+' دج'],
+    ['رقم الأعمال',fmt(d.revenue)+' دج'],['إجمالي التكاليف',fmt(d.totalCost)+' دج'],
+    ['الربح الصافي',fmt(d.profit)+' دج'],['الربح / هكتار',fmt(d.profitHa)+' دج'],
+    ['التكلفة / كلغ',d.costKg.toFixed(2)+' دج/كلغ'],['هامش الربح',pct(d.margin)],
+    ['ROI',pct(d.roi)],['سعر التعادل',d.bePrice===null?'غير قابل للحساب':d.bePrice.toFixed(2)+' دج/كلغ'],
+    ['إنتاج التعادل',d.beQ===null?'غير قابل للحساب':d.beQ.toFixed(2)+' قنطار'],['هامش الأمان',pct(d.safety)]
+  ];
+  const tableRows=rows.map(r=>`<tr><th>${r[0]}</th><td>${r[1]}</td></tr>`).join('');
+  const adviceHtml=advice.map(x=>`<li>${x}</li>`).join('');
+  const scenarioRows=[
+    ['محافظ',d.saleQ*.85,d.price*.85],['أساسي',d.saleQ,d.price],['متفائل',d.saleQ*1.15,d.price*1.15]
+  ].map(s=>{
+    const q=s[1],p=s[2],rev=q*100*p,comm=rev*d.commission/100,cost=d.operatingCost+comm,prof=(rev-comm)-d.operatingCost,mar=rev?prof/rev*100:0;
+    return `<tr><td>${s[0]}</td><td>${q.toFixed(2)} ق</td><td>${p.toFixed(2)} دج/كلغ</td><td>${fmt(rev)} دج</td><td>${fmt(cost)} دج</td><td class="${prof>=0?'positive':'negative'}">${fmt(prof)} دج</td><td>${pct(mar)}</td></tr>`;
+  }).join('');
+
+  const report=`<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>التقرير النهائي — ${crop}</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f4f7f5;color:#17231d;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Tahoma,Arial,sans-serif}
+.wrap{max-width:1050px;margin:auto;padding:18px}.hero{background:linear-gradient(135deg,#174d35,#2d8a5b);color:#fff;border-radius:20px;padding:22px}
+h1{margin:0 0 7px;font-size:26px}.sub{opacity:.92;font-size:14px}.card{background:#fff;border-radius:18px;padding:17px;margin-top:14px;border:1px solid #e8eee9}
+h2{font-size:18px;margin:0 0 13px}.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.kpi{border:1px solid #e5ebe7;border-radius:15px;padding:13px;background:#fbfcfb}
+.kpi small{display:block;color:#68756d;font-size:12px}.kpi strong{display:block;font-size:20px;margin-top:5px}.positive{color:#187044}.negative{color:#b13d32}
+table{width:100%;border-collapse:collapse;font-size:13px}th,td{padding:10px 8px;border-bottom:1px solid #e8ede9;text-align:center}th{background:#f3f7f4}
+.info{display:grid;grid-template-columns:1fr 1fr;gap:14px}.badge{display:inline-block;padding:7px 12px;border-radius:999px;background:#edf4ef;color:#1f6f4a;font-weight:800;font-size:13px}
+li{margin:8px 0;line-height:1.7}.actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:14px}button{border:0;border-radius:12px;padding:11px 16px;font-weight:800;background:#1f6f4a;color:#fff}
+button.alt{background:#edf4ef;color:#1f6f4a}.footer{text-align:center;color:#77827c;font-size:11px;padding:18px}
+@media(max-width:700px){.kpis,.info{grid-template-columns:1fr 1fr}.info{grid-template-columns:1fr}}
+@media print{body{background:#fff}.wrap{max-width:none;padding:0}.hero{background:#fff!important;color:#111;border:2px solid #1f6f4a}
+.card{border:1px solid #ccc;break-inside:avoid}.actions,.footer{display:none!important}@page{size:A4;margin:12mm}}
+</style></head><body><div class="wrap">
+<div class="hero"><h1>🌱 التقرير النهائي للمشروع الفلاحي</h1><div class="sub">الحاسبة الفلاحية DZ — V4.1 · ${today}</div></div>
+<section class="card"><h2>الملخص التنفيذي</h2><span class="badge">${status}</span>
+<div class="kpis" style="margin-top:12px">
+<div class="kpi"><small>رقم الأعمال الإجمالي</small><strong>${fmt(d.revenue)} دج</strong></div><div class="kpi"><small>عمولة البيع</small><strong>${fmt(d.commissionTotal)} دج</strong></div>
+<div class="kpi"><small>إجمالي التكاليف</small><strong>${fmt(d.totalCost)} دج</strong></div>
+<div class="kpi"><small>الربح الصافي</small><strong class="${profitClass}">${fmt(d.profit)} دج</strong></div>
+<div class="kpi"><small>الربح / هكتار</small><strong>${fmt(d.profitHa)} دج</strong></div></div></section>
+<div class="info"><section class="card"><h2>بيانات المشروع</h2><table>${tableRows}</table></section>
+<section class="card"><h2>مؤشرات القرار</h2><table>
+<tr><th>الإنتاج / هكتار</th><td>${d.yieldHa.toFixed(2)} ق</td></tr>
+${d.perennial?`<tr><th>الإنتاج / شجرة</th><td>${d.kgTree.toFixed(2)} كلغ</td></tr>`:''}
+<tr><th>عمولة البيع</th><td>${d.commission.toFixed(1)} %</td></tr><tr><th>هامش الربح</th><td>${pct(d.margin)}</td></tr><tr><th>ROI</th><td>${pct(d.roi)}</td></tr>
+<tr><th>سعر التعادل</th><td>${d.bePrice===null?'غير قابل للحساب':d.bePrice.toFixed(2)+' دج/كلغ'}</td></tr><tr><th>إنتاج التعادل</th><td>${d.beQ===null?'غير قابل للحساب':d.beQ.toFixed(2)+' ق'}</td></tr>
+<tr><th>هامش الأمان</th><td>${pct(d.safety)}</td></tr><tr><th>العائد / التكلفة</th><td>${d.revCost.toFixed(2)}×</td></tr>
+</table></section></div>
+<section class="card"><h2>مقارنة السيناريوهات</h2><table><thead><tr><th>السيناريو</th><th>الإنتاج</th><th>السعر</th><th>رقم الأعمال</th><th>التكاليف</th><th>الربح</th><th>الهامش</th></tr></thead><tbody>${scenarioRows}</tbody></table></section>
+<section class="card"><h2>إرشادات ونصائح للمزارع</h2><ul>${adviceHtml}</ul>
+<p style="font-size:12px;color:#68756d;line-height:1.7">هذا التقرير أداة للمساعدة على قراءة المعطيات المالية للمشروع. دقة النتائج مرتبطة بدقة الأرقام المدخلة.</p></section>
+<div class="actions"><button onclick="window.print()">🖨️ طباعة / حفظ PDF</button></div>
+<div class="footer">Farm Profit Calculator DZ V4.1 — تقرير نهائي</div>
+</div></body></html>`;
+
+  const blob=new Blob([report],{type:'text/html;charset=utf-8'});
+  const url=URL.createObjectURL(blob);
+  const opened=window.open(url,'_blank');
+  if(!opened){
+    window.location.href=url;
+  }
+  setTimeout(()=>URL.revokeObjectURL(url),60000);
+}
+
+function saveProject(){
+ const data={crop:$('crop').value,type:$('type').value,area:$('area').value,trees:$('trees').value,grossQ:$('grossQ').value,loss:$('loss').value,lossUnit:$('lossUnit').value,price:$('price').value,fixed:$('fixed').value,harvestPack:$('harvestPack').value,transport:$('transport').value,plant:$('plant').value,year:$('year').value,commission:$('commission').value};
+ try{localStorage.setItem('farmCalcDZ_v41',JSON.stringify(data));$('progressText').textContent='تم حفظ المشروع على هذا الجهاز.';}catch(e){$('progressText').textContent='تعذر الحفظ المحلي في هذا المتصفح.';}
+}
+function loadProject(){
+ try{const d=JSON.parse(localStorage.getItem('farmCalcDZ_v41')||'null'); if(!d){$('progressText').textContent='لا يوجد مشروع محفوظ على هذا الجهاز.';return;} Object.keys(d).forEach(id=>{if($(id))$(id).value=d[id];}); updateCropSuggestions();updateMode();updateLossMode();updateProgress();calc(false);$('progressText').textContent='تم استرجاع آخر مشروع محفوظ.';}catch(e){$('progressText').textContent='تعذر استرجاع المشروع.';}
+}
+function resetForm(){
+ $('crop').value='';$('type').value='perennial'; $('area').value=0; $('trees').value=0;
+ $('grossQ').value=0; $('loss').value=0; $('lossUnit').value='percent'; updateLossMode(); $('price').value=0; $('fixed').value=0;
+ $('harvestPack').value=0; $('transport').value=0; $('plant').value=0; $('year').value=0; $('commission').value=0;
+ ['revenue','commissionTotal','cost','profit','profitHa','saleQ','costKg','margin','roi','bePrice','beQ','safety','revCost','yieldHa','kgTree','fixedTotal','harvestTotal','transportTotal','netRevenue','c1','c2','c3','cCommission','c4','c5'].forEach(id=>$(id).textContent='—');$('scenarios').innerHTML=''; $('status').textContent='أدخل البيانات ثم احسب'; $('errorBox').classList.remove('show'); $('errorBox').innerHTML=''; updateProgress();$('status').style.color='#1f6f4a'; $('status').style.background='#edf4ef'; $('safetyBar').style.width='0';
+}
+document.getElementById('calcBtn').addEventListener('click',()=>calc(true));
+document.getElementById('saveBtn').addEventListener('click',saveProject);
+document.getElementById('loadBtn').addEventListener('click',loadProject);
+document.getElementById('resetBtn').addEventListener('click',resetForm);
+document.getElementById('printBtn').addEventListener('click',printResults);
+document.getElementById('reportBtn').addEventListener('click',downloadFinalReport);
+
+updateProgress();
+
+let deferredInstallPrompt = null;
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  deferredInstallPrompt = e;
+  const b = document.getElementById('installBtn');
+  if (b) b.style.display = 'inline-flex';
+});
+window.addEventListener('appinstalled', () => {
+  deferredInstallPrompt = null;
+  const b = document.getElementById('installBtn');
+  if (b) b.style.display = 'none';
+  const s = document.getElementById('appStatus');
+  if (s) s.textContent = '● التطبيق مثبت على الجهاز';
+});
+if ('serviceWorker' in navigator && location.protocol !== 'file:') {
+  navigator.serviceWorker.register('./sw.js').then(() => {
+    const s = document.getElementById('appStatus');
+    if (s) s.textContent = '● جاهز للعمل حتى دون اتصال';
+  }).catch(() => {});
+}
+
+document.getElementById('installBtn')?.addEventListener('click', async () => {
+  if (!deferredInstallPrompt) return;
+  deferredInstallPrompt.prompt();
+  await deferredInstallPrompt.userChoice;
+  deferredInstallPrompt = null;
+  document.getElementById('installBtn').style.display = 'none';
+});
+</script>
+</body>
+</html>
